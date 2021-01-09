@@ -9,6 +9,7 @@ import org.springframework.validation.support.BindingAwareModelMap;
 
 import com.sapient.weather.config.AutoConfiguration;
 import com.sapient.weather.model.FormInput;
+import com.sapient.weather.model.WeatherResponse;
 import com.sapient.weather.util.Constants;
 
 @SpringBootTest(classes = {AutoConfiguration.class, WeatherController.class})
@@ -25,6 +26,16 @@ class WeatherServiceIT {
 		FormInput input = preparePositiveInput();
 		String response = controller.getWeather(new BindingAwareModelMap(), input);
 		assertThat(response).isEqualTo(Constants.WEATHER_SUCCESS_PAGE);
+	}
+	
+	@Test
+	public void testThatDefaultCallToV2IsSuccesful() throws Exception {
+
+		FormInput input = preparePositiveInput();
+		WeatherResponse response = controller.getWeatherV2(new BindingAwareModelMap(), input);
+		assertThat(response).isNotNull();
+		assertThat(response.getWeatherDetailsList()).isNotEmpty();
+		assertThat(response.getWeatherDetailsList().size()).isGreaterThan(1);
 	}
 
 	private FormInput preparePositiveInput() {
